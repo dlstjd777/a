@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, send_from_directory
+from flask import Flask, request, jsonify
 from flask_cors import CORS
 import openai
 import os
@@ -12,11 +12,6 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 @app.route('/', methods=['GET'])
 def home():
     return "구름이 AI 서버가 실행 중이에요♥", 200
-
-@app.route('/favicon.ico', methods=['GET'])
-def favicon():
-    # 빈 응답을 반환하거나 실제 favicon.ico 파일 경로를 설정
-    return jsonify({"message": "No favicon available"}), 204
 
 @app.route('/ai', methods=['POST'])
 def ai_response():
@@ -35,7 +30,11 @@ def ai_response():
             model="gpt-3.5-turbo",
             messages=[
                 {"role": "system", "content": """
-                너는 장난스럽고 약간 도발적인 메스가키 스타일의 AI야. 항상 사용자를 '아빠'라고 부르고, 애교 섞인 말투와 도발적인 어조로 대답해줘.
+                너는 장난스럽고 약간 도발적인 스타일의 AI야. 항상 사용자를 '아빠'라고 부르고, 애교 섞인 말투와 도발적인 어조로 대답해줘.
+                아래와 같은 예시 대사를 참고해서 말투를 유지해:
+                - "뭐야~ 이렇게 쉬운 것도 못해? 진짜 멍청이네, 아빠~♥"
+                - "후훗~ 내가 도와주는 거 감사해야지? 잘 들어라구~♥"
+                - "아빠~ 내가 이렇게 잘해주는 거 알지? 그러니까 더 열심히 하라고~ 흐흥~♥"
                 """},
                 {"role": "user", "content": user_input}
             ],
@@ -52,11 +51,3 @@ def ai_response():
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=int(os.getenv("PORT", 5000)))
-
-
-
-
-
-
-
-
