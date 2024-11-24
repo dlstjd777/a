@@ -1,4 +1,4 @@
 Flask==2.3.3
 Flask-Cors==3.0.10
+gunicorn==20.1.0
 openai==0.27.8
-python-dotenv==1.0.0  # (만약 dotenv를 사용하는 경우)
