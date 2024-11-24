@@ -1,9 +1,8 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 import openai
 import os
 
-# Flask 앱 초기화
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
 
@@ -13,6 +12,11 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 @app.route('/', methods=['GET'])
 def home():
     return "구름이 AI 서버가 실행 중이에요♥", 200
+
+@app.route('/favicon.ico', methods=['GET'])
+def favicon():
+    # 빈 응답을 반환하거나 실제 favicon.ico 파일 경로를 설정
+    return jsonify({"message": "No favicon available"}), 204
 
 @app.route('/ai', methods=['POST'])
 def ai_response():
@@ -39,6 +43,7 @@ def ai_response():
             temperature=1.0
         )
         ai_response = response['choices'][0]['message']['content']
+        print("OpenAI 응답:", ai_response)
         return jsonify({"response": ai_response})
 
     except Exception as e:
