@@ -10,7 +10,7 @@ CORS(app, resources={r"/": {"origins": "*"}})
 # OpenAI API 키 설정
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
-# AI 응답 생성 경로
+# 기본 경로: AI 응답 처리
 @app.route('/', methods=['POST'])
 def ai_response():
     try:
@@ -45,13 +45,9 @@ def ai_response():
         print("서버 오류 발생:", str(e))
         return jsonify({"error": f"서버 오류: {str(e)}"}), 500
 
-# GET 요청을 처리하지 않음
-@app.route('/ai', methods=['POST'])
-def unused_ai():
-    return jsonify({"error": "GET 요청은 허용되지 않습니다."}), 405
-
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=int(os.getenv("PORT", 5000)))
+
 
 
 
