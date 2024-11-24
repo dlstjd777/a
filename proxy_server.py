@@ -5,18 +5,13 @@ import os
 
 # Flask 앱 초기화
 app = Flask(__name__)
-CORS(app)  # 모든 출처에서 요청 허용
+CORS(app, resources={r"/": {"origins": "*"}})
 
 # OpenAI API 키 설정
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
-# 기본 경로
-@app.route('/')
-def home():
-    return "구름이 AI 서버가 실행 중이에요♥", 200
-
 # AI 응답 생성 경로
-@app.route('/ai', methods=['POST'])
+@app.route('/', methods=['POST'])
 def ai_response():
     try:
         # 요청 데이터 확인
@@ -29,7 +24,7 @@ def ai_response():
             return jsonify({"error": "입력 데이터가 없습니다."}), 400
 
         # OpenAI API 호출
-        print("OpenAI 요청 시작")
+        print("OpenAI API 요청 시작")
         response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
             messages=[
@@ -41,7 +36,7 @@ def ai_response():
             max_tokens=100,
             temperature=1.0
         )
-        print("OpenAI 요청 성공:", response)
+        print("OpenAI API 요청 성공:", response)
 
         ai_response = response['choices'][0]['message']['content']
         return jsonify({"response": ai_response})
@@ -50,7 +45,11 @@ def ai_response():
         print("서버 오류 발생:", str(e))
         return jsonify({"error": f"서버 오류: {str(e)}"}), 500
 
-# 앱 실행
+# GET 요청을 처리하지 않음
+@app.route('/ai', methods=['POST'])
+def unused_ai():
+    return jsonify({"error": "GET 요청은 허용되지 않습니다."}), 405
+
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=int(os.getenv("PORT", 5000)))
 
